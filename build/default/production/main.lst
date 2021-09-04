@@ -1,0 +1,2551 @@
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;PROGRAMA QUE ESCRIBE UN MENSAJE DE BIENVENIDA DESPLAZANDOSE 
+                      00002 
+Warning[205]: Found directive in column 1. (LIST)
+                      00003 LIST P = 16F887
+Warning[205]: Found directive in column 1. (INCLUDE)
+                      00004 INCLUDE <P16F887.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Oct 24 2019
+                      00005 ;  MPASM PIC16F887 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2019 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00810         LIST
+                      00005 
+                      00006 ; CONFIG1
+                      00007 ; __config 0x20F2
+2007   20F2           00008  __CONFIG _CONFIG1, _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _MCLRE_ON & _CP_OFF & _CPD_OFF & _BOREN_OFF & _I
+                            ESO_OFF & _FCMEN_OFF & _LVP_OFF
+                      00009 ; CONFIG2
+                      00010 ; __config 0x3EFF
+2008   3EFF           00011  __CONFIG _CONFIG2, _BOR4V_BOR21V & _WRT_OFF
+                      00012  
+                      00013 #define LCD_EN1   PORTD,4
+                      00014  
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00015 CBLOCK 0x0020 ; Se definen las variables para los retardos
+  00000020            00016    Count250us
+  00000021            00017    Count25ms
+  00000022            00018    Count1_25s
+  00000023            00019    Count5s
+Warning[205]: Found directive in column 1. (ENDC)
+                      00020 ENDC
+                      00021 
+Warning[205]: Found directive in column 1. (ORG)
+                      00022 ORG 0x0000 ; Escribo a partir de la ubicación 0x0000 de la memoria de programa
+0000   2???           00023     GOTO    INICIO ; Salta a la etiqueta INICIO
+                      00024  
+Warning[205]: Found directive in column 1. (ORG)
+                      00025 ORG 0x0005 ; Escribo a partir de la ubicación 0x0005 de la memoria de programa
+0005                  00026 INICIO ; Etiqueta INICIO
+0005   1683 1703      00027     BANKSEL ANSEL
+0007   3000           00028     MOVLW 0x00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0088           00029     MOVWF ANSEL
+0009   3000           00030     MOVLW 0x00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000A   0089           00031     MOVWF ANSELH ;Configurando puertos como digitales
+000B   1683 1303      00032     BANKSEL TRISD
+000D   3000           00033     MOVLW 0x00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000E   0088           00034     MOVWF TRISD ; Configurando Puerto D como salida
+                      00035     
+000F   2???           00036     CALL LCD_Init ; Se inicializa la LCD
+                      00037     
+                      00038     
+                      00039     ;CREACIÓN DEL CARACTERES PERSONALIZADOS
+                      00040     ;INSTRUCCION CGRAM ADDRESS (1ER CARACTER)
+0010   3004           00041     MOVLW b'00000100' ; Se cargan los bits más significativos al registro de trabajo
+0011   0088           00042     MOVWF PORTD
+0012   1608           00043     BSF LCD_EN1
+0013   2???           00044     CALL Delay100us
+0014   1208           00045     BCF LCD_EN1
+0015   2???           00046     CALL Delay4_1ms
+0016   3000           00047     MOVLW b'00000000' ; Se cargan los bits menos significativos al registro de trabajo
+0017   0088           00048     MOVWF PORTD
+0018   1608           00049     BSF LCD_EN1
+0019   2???           00050     CALL Delay100us
+001A   1208           00051     BCF LCD_EN1
+001B   2???           00052     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 0
+                      00053 
+                      00054     ;ENVÍO DE LA FILA 1 DEL CARACTER 1 (0 0000)
+001C   3020           00055     MOVLW b'00100000'
+001D   0088           00056     MOVWF PORTD
+001E   1608           00057     BSF LCD_EN1
+001F   2???           00058     CALL Delay100us
+0020   1208           00059     BCF LCD_EN1
+0021   2???           00060     CALL Delay4_1ms
+0022   3020           00061     MOVLW b'00100000'
+0023   0088           00062     MOVWF PORTD
+0024   1608           00063     BSF LCD_EN1
+0025   2???           00064     CALL Delay100us
+0026   1208           00065     BCF LCD_EN1
+0027   2???           00066     CALL Delay4_1ms
+                      00067 
+                      00068     ;ENVÍO DE LA FILA 2 DEL CARACTER 1 (0 0000)
+0028   3020           00069     MOVLW b'00100000'
+0029   0088           00070     MOVWF PORTD
+002A   1608           00071     BSF LCD_EN1
+002B   2???           00072     CALL Delay100us
+002C   1208           00073     BCF LCD_EN1
+002D   2???           00074     CALL Delay4_1ms
+002E   3020           00075     MOVLW b'00100000'
+002F   0088           00076     MOVWF PORTD
+0030   1608           00077     BSF LCD_EN1
+0031   2???           00078     CALL Delay100us
+0032   1208           00079     BCF LCD_EN1
+0033   2???           00080     CALL Delay4_1ms
+                      00081 
+                      00082     ;ENVÍO DE LA FILA 3 DEL CARACTER 1 (0 0000)
+0034   3020           00083     MOVLW b'00100000'
+0035   0088           00084     MOVWF PORTD
+0036   1608           00085     BSF LCD_EN1
+0037   2???           00086     CALL Delay100us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0038   1208           00087     BCF LCD_EN1
+0039   2???           00088     CALL Delay4_1ms
+003A   3020           00089     MOVLW b'00100000'
+003B   0088           00090     MOVWF PORTD
+003C   1608           00091     BSF LCD_EN1
+003D   2???           00092     CALL Delay100us
+003E   1208           00093     BCF LCD_EN1
+003F   2???           00094     CALL Delay4_1ms
+                      00095 
+                      00096     ;ENVÍO DE LA FILA 4 DEL CARACTER 1 (0 0000)
+0040   3020           00097     MOVLW b'00100000'
+0041   0088           00098     MOVWF PORTD
+0042   1608           00099     BSF LCD_EN1
+0043   2???           00100     CALL Delay100us
+0044   1208           00101     BCF LCD_EN1
+0045   2???           00102     CALL Delay4_1ms
+0046   3020           00103     MOVLW b'00100000'
+0047   0088           00104     MOVWF PORTD
+0048   1608           00105     BSF LCD_EN1
+0049   2???           00106     CALL Delay100us
+004A   1208           00107     BCF LCD_EN1
+004B   2???           00108     CALL Delay4_1ms
+                      00109 
+                      00110     ;ENVÍO DE LA FILA 5 DEL CARACTER 1 (0 0000)
+004C   3020           00111     MOVLW b'00100000'
+004D   0088           00112     MOVWF PORTD
+004E   1608           00113     BSF LCD_EN1
+004F   2???           00114     CALL Delay100us
+0050   1208           00115     BCF LCD_EN1
+0051   2???           00116     CALL Delay4_1ms
+0052   3020           00117     MOVLW b'00100000'
+0053   0088           00118     MOVWF PORTD
+0054   1608           00119     BSF LCD_EN1
+0055   2???           00120     CALL Delay100us
+0056   1208           00121     BCF LCD_EN1
+0057   2???           00122     CALL Delay4_1ms
+                      00123 
+                      00124     ;ENVÍO DE LA FILA 6 DEL CARACTER 1 (1 0000)
+0058   3021           00125     MOVLW b'00100001'
+0059   0088           00126     MOVWF PORTD
+005A   1608           00127     BSF LCD_EN1
+005B   2???           00128     CALL Delay100us
+005C   1208           00129     BCF LCD_EN1
+005D   2???           00130     CALL Delay4_1ms
+005E   3020           00131     MOVLW b'00100000'
+005F   0088           00132     MOVWF PORTD
+0060   1608           00133     BSF LCD_EN1
+0061   2???           00134     CALL Delay100us
+0062   1208           00135     BCF LCD_EN1
+0063   2???           00136     CALL Delay4_1ms
+                      00137 
+                      00138     ;ENVÍO DE LA FILA 7 DEL CARACTER 1 (1 0000)
+0064   3021           00139     MOVLW b'00100001'
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0065   0088           00140     MOVWF PORTD
+0066   1608           00141     BSF LCD_EN1
+0067   2???           00142     CALL Delay100us
+0068   1208           00143     BCF LCD_EN1
+0069   2???           00144     CALL Delay4_1ms
+006A   3020           00145     MOVLW b'00100000'
+006B   0088           00146     MOVWF PORTD
+006C   1608           00147     BSF LCD_EN1
+006D   2???           00148     CALL Delay100us
+006E   1208           00149     BCF LCD_EN1
+006F   2???           00150     CALL Delay4_1ms
+                      00151 
+                      00152     ;ENVÍO DE LA FILA 8 DEL CARACTER 1 (1 1100)
+0070   3021           00153     MOVLW b'00100001'
+0071   0088           00154     MOVWF PORTD
+0072   1608           00155     BSF LCD_EN1
+0073   2???           00156     CALL Delay100us
+0074   1208           00157     BCF LCD_EN1
+0075   2???           00158     CALL Delay4_1ms
+0076   302C           00159     MOVLW b'00101100'
+0077   0088           00160     MOVWF PORTD
+0078   1608           00161     BSF LCD_EN1
+0079   2???           00162     CALL Delay100us
+007A   1208           00163     BCF LCD_EN1
+007B   2???           00164     CALL Delay4_1ms
+                      00165         
+                      00166     
+                      00167        
+                      00168     ;INSTRUCCION CGRAM ADDRESS (2DO CARACTER)
+007C   3004           00169     MOVLW b'00000100' ; Se cargan los bits más significativos al registro de trabajo
+007D   0088           00170     MOVWF PORTD
+007E   1608           00171     BSF LCD_EN1
+007F   2???           00172     CALL Delay100us
+0080   1208           00173     BCF LCD_EN1
+0081   2???           00174     CALL Delay4_1ms
+0082   3008           00175     MOVLW b'00001000' ; Se cargan los bits menos significativos al registro de trabajo
+0083   0088           00176     MOVWF PORTD
+0084   1608           00177     BSF LCD_EN1
+0085   2???           00178     CALL Delay100us
+0086   1208           00179     BCF LCD_EN1
+0087   2???           00180     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 8
+                      00181 
+                      00182     ;ENVÍO DE LA FILA 1 DEL CARACTER 2 (0 0011)
+0088   3020           00183     MOVLW b'00100000'
+0089   0088           00184     MOVWF PORTD
+008A   1608           00185     BSF LCD_EN1
+008B   2???           00186     CALL Delay100us
+008C   1208           00187     BCF LCD_EN1
+008D   2???           00188     CALL Delay4_1ms
+008E   3023           00189     MOVLW b'00100011'
+008F   0088           00190     MOVWF PORTD
+0090   1608           00191     BSF LCD_EN1
+0091   2???           00192     CALL Delay100us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0092   1208           00193     BCF LCD_EN1
+0093   2???           00194     CALL Delay4_1ms
+                      00195 
+                      00196     ;ENVÍO DE LA FILA 2 DEL CARACTER 2 (0 0101)
+0094   3020           00197     MOVLW b'00100000'
+0095   0088           00198     MOVWF PORTD
+0096   1608           00199     BSF LCD_EN1
+0097   2???           00200     CALL Delay100us
+0098   1208           00201     BCF LCD_EN1
+0099   2???           00202     CALL Delay4_1ms
+009A   3025           00203     MOVLW b'00100101'
+009B   0088           00204     MOVWF PORTD
+009C   1608           00205     BSF LCD_EN1
+009D   2???           00206     CALL Delay100us
+009E   1208           00207     BCF LCD_EN1
+009F   2???           00208     CALL Delay4_1ms
+                      00209 
+                      00210     ;ENVÍO DE LA FILA 3 DEL CARACTER 2 (0 0111)
+00A0   3020           00211     MOVLW b'00100000'
+00A1   0088           00212     MOVWF PORTD
+00A2   1608           00213     BSF LCD_EN1
+00A3   2???           00214     CALL Delay100us
+00A4   1208           00215     BCF LCD_EN1
+00A5   2???           00216     CALL Delay4_1ms
+00A6   3027           00217     MOVLW b'00100111'
+00A7   0088           00218     MOVWF PORTD
+00A8   1608           00219     BSF LCD_EN1
+00A9   2???           00220     CALL Delay100us
+00AA   1208           00221     BCF LCD_EN1
+00AB   2???           00222     CALL Delay4_1ms
+                      00223 
+                      00224     ;ENVÍO DE LA FILA 4 DEL CARACTER 2 (0 0111)
+00AC   3020           00225     MOVLW b'00100000'
+00AD   0088           00226     MOVWF PORTD
+00AE   1608           00227     BSF LCD_EN1
+00AF   2???           00228     CALL Delay100us
+00B0   1208           00229     BCF LCD_EN1
+00B1   2???           00230     CALL Delay4_1ms
+00B2   3027           00231     MOVLW b'00100111'
+00B3   0088           00232     MOVWF PORTD
+00B4   1608           00233     BSF LCD_EN1
+00B5   2???           00234     CALL Delay100us
+00B6   1208           00235     BCF LCD_EN1
+00B7   2???           00236     CALL Delay4_1ms
+                      00237 
+                      00238     ;ENVÍO DE LA FILA 5 DEL CARACTER 2 (0 0111)
+00B8   3020           00239     MOVLW b'00100000'
+00B9   0088           00240     MOVWF PORTD
+00BA   1608           00241     BSF LCD_EN1
+00BB   2???           00242     CALL Delay100us
+00BC   1208           00243     BCF LCD_EN1
+00BD   2???           00244     CALL Delay4_1ms
+00BE   3027           00245     MOVLW b'00100111'
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00BF   0088           00246     MOVWF PORTD
+00C0   1608           00247     BSF LCD_EN1
+00C1   2???           00248     CALL Delay100us
+00C2   1208           00249     BCF LCD_EN1
+00C3   2???           00250     CALL Delay4_1ms
+                      00251 
+                      00252     ;ENVÍO DE LA FILA 6 DEL CARACTER 2 (0 0111)
+00C4   3020           00253     MOVLW b'00100000'
+00C5   0088           00254     MOVWF PORTD
+00C6   1608           00255     BSF LCD_EN1
+00C7   2???           00256     CALL Delay100us
+00C8   1208           00257     BCF LCD_EN1
+00C9   2???           00258     CALL Delay4_1ms
+00CA   3027           00259     MOVLW b'00100111'
+00CB   0088           00260     MOVWF PORTD
+00CC   1608           00261     BSF LCD_EN1
+00CD   2???           00262     CALL Delay100us
+00CE   1208           00263     BCF LCD_EN1
+00CF   2???           00264     CALL Delay4_1ms
+                      00265 
+                      00266     ;ENVÍO DE LA FILA 7 DEL CARACTER 2 (0 1111)
+00D0   3020           00267     MOVLW b'00100000'
+00D1   0088           00268     MOVWF PORTD
+00D2   1608           00269     BSF LCD_EN1
+00D3   2???           00270     CALL Delay100us
+00D4   1208           00271     BCF LCD_EN1
+00D5   2???           00272     CALL Delay4_1ms
+00D6   302F           00273     MOVLW b'00101111'
+00D7   0088           00274     MOVWF PORTD
+00D8   1608           00275     BSF LCD_EN1
+00D9   2???           00276     CALL Delay100us
+00DA   1208           00277     BCF LCD_EN1
+00DB   2???           00278     CALL Delay4_1ms
+                      00279 
+                      00280     ;ENVÍO DE LA FILA 8 DEL CARACTER 2 (1 1111)
+00DC   3021           00281     MOVLW b'00100001'
+00DD   0088           00282     MOVWF PORTD
+00DE   1608           00283     BSF LCD_EN1
+00DF   2???           00284     CALL Delay100us
+00E0   1208           00285     BCF LCD_EN1
+00E1   2???           00286     CALL Delay4_1ms
+00E2   302F           00287     MOVLW b'00101111'
+00E3   0088           00288     MOVWF PORTD
+00E4   1608           00289     BSF LCD_EN1
+00E5   2???           00290     CALL Delay100us
+00E6   1208           00291     BCF LCD_EN1
+00E7   2???           00292     CALL Delay4_1ms    
+                      00293     
+                      00294     ;INSTRUCCION CGRAM ADDRESS (3ER CARACTER)
+00E8   3005           00295     MOVLW b'00000101' ; Se cargan los bits más significativos al registro de trabajo
+00E9   0088           00296     MOVWF PORTD
+00EA   1608           00297     BSF LCD_EN1
+00EB   2???           00298     CALL Delay100us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00EC   1208           00299     BCF LCD_EN1
+00ED   2???           00300     CALL Delay4_1ms
+00EE   3000           00301     MOVLW b'00000000' ; Se cargan los bits menos significativos al registro de trabajo
+00EF   0088           00302     MOVWF PORTD
+00F0   1608           00303     BSF LCD_EN1
+00F1   2???           00304     CALL Delay100us
+00F2   1208           00305     BCF LCD_EN1
+00F3   2???           00306     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 16
+                      00307 
+                      00308     ;ENVÍO DE LA FILA 1 DEL CARACTER 3 (1 1110)
+00F4   3021           00309     MOVLW b'00100001'
+00F5   0088           00310     MOVWF PORTD
+00F6   1608           00311     BSF LCD_EN1
+00F7   2???           00312     CALL Delay100us
+00F8   1208           00313     BCF LCD_EN1
+00F9   2???           00314     CALL Delay4_1ms
+00FA   302E           00315     MOVLW b'00101110'
+00FB   0088           00316     MOVWF PORTD
+00FC   1608           00317     BSF LCD_EN1
+00FD   2???           00318     CALL Delay100us
+00FE   1208           00319     BCF LCD_EN1
+00FF   2???           00320     CALL Delay4_1ms
+                      00321 
+                      00322     ;ENVÍO DE LA FILA 2 DEL CARACTER 3 (1 1111)
+0100   3021           00323     MOVLW b'00100001'
+0101   0088           00324     MOVWF PORTD
+0102   1608           00325     BSF LCD_EN1
+0103   2???           00326     CALL Delay100us
+0104   1208           00327     BCF LCD_EN1
+0105   2???           00328     CALL Delay4_1ms
+0106   302F           00329     MOVLW b'00101111'
+0107   0088           00330     MOVWF PORTD
+0108   1608           00331     BSF LCD_EN1
+0109   2???           00332     CALL Delay100us
+010A   1208           00333     BCF LCD_EN1
+010B   2???           00334     CALL Delay4_1ms
+                      00335 
+                      00336     ;ENVÍO DE LA FILA 3 DEL CARACTER 3 (1 1111)
+010C   3021           00337     MOVLW b'00100001'
+010D   0088           00338     MOVWF PORTD
+010E   1608           00339     BSF LCD_EN1
+010F   2???           00340     CALL Delay100us
+0110   1208           00341     BCF LCD_EN1
+0111   2???           00342     CALL Delay4_1ms
+0112   302F           00343     MOVLW b'00101111'
+0113   0088           00344     MOVWF PORTD
+0114   1608           00345     BSF LCD_EN1
+0115   2???           00346     CALL Delay100us
+0116   1208           00347     BCF LCD_EN1
+0117   2???           00348     CALL Delay4_1ms
+                      00349 
+                      00350     ;ENVÍO DE LA FILA 4 DEL CARACTER 3 (1 1111)
+0118   3021           00351     MOVLW b'00100001'
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0119   0088           00352     MOVWF PORTD
+011A   1608           00353     BSF LCD_EN1
+011B   2???           00354     CALL Delay100us
+011C   1208           00355     BCF LCD_EN1
+011D   2???           00356     CALL Delay4_1ms
+011E   302F           00357     MOVLW b'00101111'
+011F   0088           00358     MOVWF PORTD
+0120   1608           00359     BSF LCD_EN1
+0121   2???           00360     CALL Delay100us
+0122   1208           00361     BCF LCD_EN1
+0123   2???           00362     CALL Delay4_1ms
+                      00363 
+                      00364     ;ENVÍO DE LA FILA 5 DEL CARACTER 3 (1 0000)
+0124   3021           00365     MOVLW b'00100001'
+0125   0088           00366     MOVWF PORTD
+0126   1608           00367     BSF LCD_EN1
+0127   2???           00368     CALL Delay100us
+0128   1208           00369     BCF LCD_EN1
+0129   2???           00370     CALL Delay4_1ms
+012A   3020           00371     MOVLW b'00100000'
+012B   0088           00372     MOVWF PORTD
+012C   1608           00373     BSF LCD_EN1
+012D   2???           00374     CALL Delay100us
+012E   1208           00375     BCF LCD_EN1
+012F   2???           00376     CALL Delay4_1ms
+                      00377 
+                      00378     ;ENVÍO DE LA FILA 6 DEL CARACTER 3 (1 1110)
+0130   3021           00379     MOVLW b'00100001'
+0131   0088           00380     MOVWF PORTD
+0132   1608           00381     BSF LCD_EN1
+0133   2???           00382     CALL Delay100us
+0134   1208           00383     BCF LCD_EN1
+0135   2???           00384     CALL Delay4_1ms
+0136   302E           00385     MOVLW b'00101110'
+0137   0088           00386     MOVWF PORTD
+0138   1608           00387     BSF LCD_EN1
+0139   2???           00388     CALL Delay100us
+013A   1208           00389     BCF LCD_EN1
+013B   2???           00390     CALL Delay4_1ms
+                      00391 
+                      00392     ;ENVÍO DE LA FILA 7 DEL CARACTER 3 (1 0000)
+013C   3021           00393     MOVLW b'00100001'
+013D   0088           00394     MOVWF PORTD
+013E   1608           00395     BSF LCD_EN1
+013F   2???           00396     CALL Delay100us
+0140   1208           00397     BCF LCD_EN1
+0141   2???           00398     CALL Delay4_1ms
+0142   3020           00399     MOVLW b'00100000'
+0143   0088           00400     MOVWF PORTD
+0144   1608           00401     BSF LCD_EN1
+0145   2???           00402     CALL Delay100us
+0146   1208           00403     BCF LCD_EN1
+0147   2???           00404     CALL Delay4_1ms
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00405 
+                      00406     ;ENVÍO DE LA FILA 8 DEL CARACTER 3 (1 0000)
+0148   3021           00407     MOVLW b'00100001'
+0149   0088           00408     MOVWF PORTD
+014A   1608           00409     BSF LCD_EN1
+014B   2???           00410     CALL Delay100us
+014C   1208           00411     BCF LCD_EN1
+014D   2???           00412     CALL Delay4_1ms
+014E   3020           00413     MOVLW b'00100000'
+014F   0088           00414     MOVWF PORTD
+0150   1608           00415     BSF LCD_EN1
+0151   2???           00416     CALL Delay100us
+0152   1208           00417     BCF LCD_EN1
+0153   2???           00418     CALL Delay4_1ms
+                      00419     
+                      00420     ;INSTRUCCION CGRAM ADDRESS (4TO CARACTER)
+0154   3005           00421     MOVLW b'00000101' ; Se cargan los bits más significativos al registro de trabajo
+0155   0088           00422     MOVWF PORTD
+0156   1608           00423     BSF LCD_EN1
+0157   2???           00424     CALL Delay100us
+0158   1208           00425     BCF LCD_EN1
+0159   2???           00426     CALL Delay4_1ms
+015A   3008           00427     MOVLW b'00001000' ; Se cargan los bits menos significativos al registro de trabajo
+015B   0088           00428     MOVWF PORTD
+015C   1608           00429     BSF LCD_EN1
+015D   2???           00430     CALL Delay100us
+015E   1208           00431     BCF LCD_EN1
+015F   2???           00432     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 24
+                      00433 
+                      00434     ;ENVÍO DE LA FILA 1 DEL CARACTER 4 (1 1101)
+0160   3021           00435     MOVLW b'00100001'
+0161   0088           00436     MOVWF PORTD
+0162   1608           00437     BSF LCD_EN1
+0163   2???           00438     CALL Delay100us
+0164   1208           00439     BCF LCD_EN1
+0165   2???           00440     CALL Delay4_1ms
+0166   302D           00441     MOVLW b'00101101'
+0167   0088           00442     MOVWF PORTD
+0168   1608           00443     BSF LCD_EN1
+0169   2???           00444     CALL Delay100us
+016A   1208           00445     BCF LCD_EN1
+016B   2???           00446     CALL Delay4_1ms
+                      00447 
+                      00448     ;ENVÍO DE LA FILA 2 DEL CARACTER 4 (1 1111)
+016C   3021           00449     MOVLW b'00100001'
+016D   0088           00450     MOVWF PORTD
+016E   1608           00451     BSF LCD_EN1
+016F   2???           00452     CALL Delay100us
+0170   1208           00453     BCF LCD_EN1
+0171   2???           00454     CALL Delay4_1ms
+0172   302F           00455     MOVLW b'00101111'
+0173   0088           00456     MOVWF PORTD
+0174   1608           00457     BSF LCD_EN1
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0175   2???           00458     CALL Delay100us
+0176   1208           00459     BCF LCD_EN1
+0177   2???           00460     CALL Delay4_1ms
+                      00461 
+                      00462     ;ENVÍO DE LA FILA 3 DEL CARACTER 4 (0 1111)
+0178   3020           00463     MOVLW b'00100000'
+0179   0088           00464     MOVWF PORTD
+017A   1608           00465     BSF LCD_EN1
+017B   2???           00466     CALL Delay100us
+017C   1208           00467     BCF LCD_EN1
+017D   2???           00468     CALL Delay4_1ms
+017E   302F           00469     MOVLW b'00101111'
+017F   0088           00470     MOVWF PORTD
+0180   1608           00471     BSF LCD_EN1
+0181   2???           00472     CALL Delay100us
+0182   1208           00473     BCF LCD_EN1
+0183   2???           00474     CALL Delay4_1ms
+                      00475 
+                      00476     ;ENVÍO DE LA FILA 4 DEL CARACTER 4 (0 0111)
+0184   3020           00477     MOVLW b'00100000'
+0185   0088           00478     MOVWF PORTD
+0186   1608           00479     BSF LCD_EN1
+0187   2???           00480     CALL Delay100us
+0188   1208           00481     BCF LCD_EN1
+0189   2???           00482     CALL Delay4_1ms
+018A   3027           00483     MOVLW b'00100111'
+018B   0088           00484     MOVWF PORTD
+018C   1608           00485     BSF LCD_EN1
+018D   2???           00486     CALL Delay100us
+018E   1208           00487     BCF LCD_EN1
+018F   2???           00488     CALL Delay4_1ms
+                      00489 
+                      00490     ;ENVÍO DE LA FILA 5 DEL CARACTER 4 (0 0011)
+0190   3020           00491     MOVLW b'00100000'
+0191   0088           00492     MOVWF PORTD
+0192   1608           00493     BSF LCD_EN1
+0193   2???           00494     CALL Delay100us
+0194   1208           00495     BCF LCD_EN1
+0195   2???           00496     CALL Delay4_1ms
+0196   3023           00497     MOVLW b'00100011'
+0197   0088           00498     MOVWF PORTD
+0198   1608           00499     BSF LCD_EN1
+0199   2???           00500     CALL Delay100us
+019A   1208           00501     BCF LCD_EN1
+019B   2???           00502     CALL Delay4_1ms
+                      00503 
+                      00504     ;ENVÍO DE LA FILA 6 DEL CARACTER 4 (0 0000)
+019C   3020           00505     MOVLW b'00100000'
+019D   0088           00506     MOVWF PORTD
+019E   1608           00507     BSF LCD_EN1
+019F   2???           00508     CALL Delay100us
+01A0   1208           00509     BCF LCD_EN1
+01A1   2???           00510     CALL Delay4_1ms
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01A2   3020           00511     MOVLW b'00100000'
+01A3   0088           00512     MOVWF PORTD
+01A4   1608           00513     BSF LCD_EN1
+01A5   2???           00514     CALL Delay100us
+01A6   1208           00515     BCF LCD_EN1
+01A7   2???           00516     CALL Delay4_1ms
+                      00517 
+                      00518     ;ENVÍO DE LA FILA 7 DEL CARACTER 4 (0 0000)
+01A8   3020           00519     MOVLW b'00100000'
+01A9   0088           00520     MOVWF PORTD
+01AA   1608           00521     BSF LCD_EN1
+01AB   2???           00522     CALL Delay100us
+01AC   1208           00523     BCF LCD_EN1
+01AD   2???           00524     CALL Delay4_1ms
+01AE   3020           00525     MOVLW b'00100000'
+01AF   0088           00526     MOVWF PORTD
+01B0   1608           00527     BSF LCD_EN1
+01B1   2???           00528     CALL Delay100us
+01B2   1208           00529     BCF LCD_EN1
+01B3   2???           00530     CALL Delay4_1ms
+                      00531 
+                      00532     ;ENVÍO DE LA FILA 8 DEL CARACTER 4 (0 0000)
+01B4   3020           00533     MOVLW b'00100000'
+01B5   0088           00534     MOVWF PORTD
+01B6   1608           00535     BSF LCD_EN1
+01B7   2???           00536     CALL Delay100us
+01B8   1208           00537     BCF LCD_EN1
+01B9   2???           00538     CALL Delay4_1ms
+01BA   3020           00539     MOVLW b'00100000'
+01BB   0088           00540     MOVWF PORTD
+01BC   1608           00541     BSF LCD_EN1
+01BD   2???           00542     CALL Delay100us
+01BE   1208           00543     BCF LCD_EN1
+01BF   2???           00544     CALL Delay4_1ms
+                      00545     
+                      00546     ;INSTRUCCION CGRAM ADDRESS (5TO CARACTER)
+01C0   3006           00547     MOVLW b'00000110' ; Se cargan los bits más significativos al registro de trabajo
+01C1   0088           00548     MOVWF PORTD
+01C2   1608           00549     BSF LCD_EN1
+01C3   2???           00550     CALL Delay100us
+01C4   1208           00551     BCF LCD_EN1
+01C5   2???           00552     CALL Delay4_1ms
+01C6   3000           00553     MOVLW b'00000000' ; Se cargan los bits menos significativos al registro de trabajo
+01C7   0088           00554     MOVWF PORTD
+01C8   1608           00555     BSF LCD_EN1
+01C9   2???           00556     CALL Delay100us
+01CA   1208           00557     BCF LCD_EN1
+01CB   2???           00558     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 32
+                      00559 
+                      00560     ;ENVÍO DE LA FILA 1 DEL CARACTER 5 (1 1111)
+01CC   3021           00561     MOVLW b'00100001' ; Al ser datos los que se van a enviar se coloca en alto el bit RS
+01CD   0088           00562     MOVWF PORTD
+01CE   1608           00563     BSF LCD_EN1
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01CF   2???           00564     CALL Delay100us
+01D0   1208           00565     BCF LCD_EN1
+01D1   2???           00566     CALL Delay4_1ms
+01D2   302F           00567     MOVLW b'00101111'
+01D3   0088           00568     MOVWF PORTD
+01D4   1608           00569     BSF LCD_EN1
+01D5   2???           00570     CALL Delay100us
+01D6   1208           00571     BCF LCD_EN1
+01D7   2???           00572     CALL Delay4_1ms
+                      00573 
+                      00574     ;ENVÍO DE LA FILA 2 DEL CARACTER 5 (1 1111)
+01D8   3021           00575     MOVLW b'00100001'
+01D9   0088           00576     MOVWF PORTD
+01DA   1608           00577     BSF LCD_EN1
+01DB   2???           00578     CALL Delay100us
+01DC   1208           00579     BCF LCD_EN1
+01DD   2???           00580     CALL Delay4_1ms
+01DE   302F           00581     MOVLW b'00101111'
+01DF   0088           00582     MOVWF PORTD
+01E0   1608           00583     BSF LCD_EN1
+01E1   2???           00584     CALL Delay100us
+01E2   1208           00585     BCF LCD_EN1
+01E3   2???           00586     CALL Delay4_1ms
+                      00587 
+                      00588     ;ENVÍO DE LA FILA 3 DEL CARACTER 5 (1 1111)
+01E4   3021           00589     MOVLW b'00100001'
+01E5   0088           00590     MOVWF PORTD
+01E6   1608           00591     BSF LCD_EN1
+01E7   2???           00592     CALL Delay100us
+01E8   1208           00593     BCF LCD_EN1
+01E9   2???           00594     CALL Delay4_1ms
+01EA   302F           00595     MOVLW b'00101111'
+01EB   0088           00596     MOVWF PORTD
+01EC   1608           00597     BSF LCD_EN1
+01ED   2???           00598     CALL Delay100us
+01EE   1208           00599     BCF LCD_EN1
+01EF   2???           00600     CALL Delay4_1ms
+                      00601 
+                      00602     ;ENVÍO DE LA FILA 4 DEL CARACTER 5 (1 1111)
+01F0   3021           00603     MOVLW b'00100001'
+01F1   0088           00604     MOVWF PORTD
+01F2   1608           00605     BSF LCD_EN1
+01F3   2???           00606     CALL Delay100us
+01F4   1208           00607     BCF LCD_EN1
+01F5   2???           00608     CALL Delay4_1ms
+01F6   302F           00609     MOVLW b'00101111'
+01F7   0088           00610     MOVWF PORTD
+01F8   1608           00611     BSF LCD_EN1
+01F9   2???           00612     CALL Delay100us
+01FA   1208           00613     BCF LCD_EN1
+01FB   2???           00614     CALL Delay4_1ms
+                      00615 
+                      00616     ;ENVÍO DE LA FILA 5 DEL CARACTER 5 (1 1011)
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01FC   3021           00617     MOVLW b'00100001'
+01FD   0088           00618     MOVWF PORTD
+01FE   1608           00619     BSF LCD_EN1
+01FF   2???           00620     CALL Delay100us
+0200   1208           00621     BCF LCD_EN1
+0201   2???           00622     CALL Delay4_1ms
+0202   302B           00623     MOVLW b'00101011'
+0203   0088           00624     MOVWF PORTD
+0204   1608           00625     BSF LCD_EN1
+0205   2???           00626     CALL Delay100us
+0206   1208           00627     BCF LCD_EN1
+0207   2???           00628     CALL Delay4_1ms
+                      00629 
+                      00630     ;ENVÍO DE LA FILA 6 DEL CARACTER 5 (1 0010)
+0208   3021           00631     MOVLW b'00100001'
+0209   0088           00632     MOVWF PORTD
+020A   1608           00633     BSF LCD_EN1
+020B   2???           00634     CALL Delay100us
+020C   1208           00635     BCF LCD_EN1
+020D   2???           00636     CALL Delay4_1ms
+020E   3022           00637     MOVLW b'00100010'
+020F   0088           00638     MOVWF PORTD
+0210   1608           00639     BSF LCD_EN1
+0211   2???           00640     CALL Delay100us
+0212   1208           00641     BCF LCD_EN1
+0213   2???           00642     CALL Delay4_1ms
+                      00643 
+                      00644     ;ENVÍO DE LA FILA 7 DEL CARACTER 5 (1 0010)
+0214   3021           00645     MOVLW b'00100001'
+0215   0088           00646     MOVWF PORTD
+0216   1608           00647     BSF LCD_EN1
+0217   2???           00648     CALL Delay100us
+0218   1208           00649     BCF LCD_EN1
+0219   2???           00650     CALL Delay4_1ms
+021A   3022           00651     MOVLW b'00100010'
+021B   0088           00652     MOVWF PORTD
+021C   1608           00653     BSF LCD_EN1
+021D   2???           00654     CALL Delay100us
+021E   1208           00655     BCF LCD_EN1
+021F   2???           00656     CALL Delay4_1ms
+                      00657 
+                      00658     ;ENVÍO DE LA FILA 8 DEL CARACTER 5 (1 1011)
+0220   3021           00659     MOVLW b'00100001'
+0221   0088           00660     MOVWF PORTD
+0222   1608           00661     BSF LCD_EN1
+0223   2???           00662     CALL Delay100us
+0224   1208           00663     BCF LCD_EN1
+0225   2???           00664     CALL Delay4_1ms
+0226   302B           00665     MOVLW b'00101011'
+0227   0088           00666     MOVWF PORTD
+0228   1608           00667     BSF LCD_EN1
+0229   2???           00668     CALL Delay100us
+022A   1208           00669     BCF LCD_EN1
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+022B   2???           00670     CALL Delay4_1ms
+                      00671     
+                      00672     ;INSTRUCCION CGRAM ADDRESS (6TO CARACTER)
+022C   3006           00673     MOVLW b'00000110' ; Se cargan los bits más significativos al registro de trabajo
+022D   0088           00674     MOVWF PORTD
+022E   1608           00675     BSF LCD_EN1
+022F   2???           00676     CALL Delay100us
+0230   1208           00677     BCF LCD_EN1
+0231   2???           00678     CALL Delay4_1ms
+0232   3008           00679     MOVLW b'00001000' ; Se cargan los bits menos significativos al registro de trabajo
+0233   0088           00680     MOVWF PORTD
+0234   1608           00681     BSF LCD_EN1
+0235   2???           00682     CALL Delay100us
+0236   1208           00683     BCF LCD_EN1
+0237   2???           00684     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 40
+                      00685    
+                      00686     ;ENVÍO DE LA FILA 1 DEL CARACTER 6 (1 1100)
+0238   3021           00687     MOVLW b'00100001' ; Al ser datos los que se van a enviar se coloca en alto el bit RS
+0239   0088           00688     MOVWF PORTD
+023A   1608           00689     BSF LCD_EN1
+023B   2???           00690     CALL Delay100us
+023C   1208           00691     BCF LCD_EN1
+023D   2???           00692     CALL Delay4_1ms
+023E   302C           00693     MOVLW b'00101100'
+023F   0088           00694     MOVWF PORTD
+0240   1608           00695     BSF LCD_EN1
+0241   2???           00696     CALL Delay100us
+0242   1208           00697     BCF LCD_EN1
+0243   2???           00698     CALL Delay4_1ms
+                      00699 
+                      00700     ;ENVÍO DE LA FILA 2 DEL CARACTER 6 (1 0100)
+0244   3021           00701     MOVLW b'00100001'
+0245   0088           00702     MOVWF PORTD
+0246   1608           00703     BSF LCD_EN1
+0247   2???           00704     CALL Delay100us
+0248   1208           00705     BCF LCD_EN1
+0249   2???           00706     CALL Delay4_1ms
+024A   3024           00707     MOVLW b'00100100'
+024B   0088           00708     MOVWF PORTD
+024C   1608           00709     BSF LCD_EN1
+024D   2???           00710     CALL Delay100us
+024E   1208           00711     BCF LCD_EN1
+024F   2???           00712     CALL Delay4_1ms
+                      00713 
+                      00714     ;ENVÍO DE LA FILA 3 DEL CARACTER 6 (1 0000)
+0250   3021           00715     MOVLW b'00100001'
+0251   0088           00716     MOVWF PORTD
+0252   1608           00717     BSF LCD_EN1
+0253   2???           00718     CALL Delay100us
+0254   1208           00719     BCF LCD_EN1
+0255   2???           00720     CALL Delay4_1ms
+0256   3020           00721     MOVLW b'00100000'
+0257   0088           00722     MOVWF PORTD
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0258   1608           00723     BSF LCD_EN1
+0259   2???           00724     CALL Delay100us
+025A   1208           00725     BCF LCD_EN1
+025B   2???           00726     CALL Delay4_1ms
+                      00727 
+                      00728     ;ENVÍO DE LA FILA 4 DEL CARACTER 6 (1 0000)
+025C   3021           00729     MOVLW b'00100001'
+025D   0088           00730     MOVWF PORTD
+025E   1608           00731     BSF LCD_EN1
+025F   2???           00732     CALL Delay100us
+0260   1208           00733     BCF LCD_EN1
+0261   2???           00734     CALL Delay4_1ms
+0262   3020           00735     MOVLW b'00100000'
+0263   0088           00736     MOVWF PORTD
+0264   1608           00737     BSF LCD_EN1
+0265   2???           00738     CALL Delay100us
+0266   1208           00739     BCF LCD_EN1
+0267   2???           00740     CALL Delay4_1ms
+                      00741 
+                      00742     ;ENVÍO DE LA FILA 5 DEL CARACTER 6 (0 0000)
+0268   3020           00743     MOVLW b'00100000'
+0269   0088           00744     MOVWF PORTD
+026A   1608           00745     BSF LCD_EN1
+026B   2???           00746     CALL Delay100us
+026C   1208           00747     BCF LCD_EN1
+026D   2???           00748     CALL Delay4_1ms
+026E   3020           00749     MOVLW b'00100000'
+026F   0088           00750     MOVWF PORTD
+0270   1608           00751     BSF LCD_EN1
+0271   2???           00752     CALL Delay100us
+0272   1208           00753     BCF LCD_EN1
+0273   2???           00754     CALL Delay4_1ms
+                      00755 
+                      00756     ;ENVÍO DE LA FILA 6 DEL CARACTER 6 (0 0000)
+0274   3020           00757     MOVLW b'00100000'
+0275   0088           00758     MOVWF PORTD
+0276   1608           00759     BSF LCD_EN1
+0277   2???           00760     CALL Delay100us
+0278   1208           00761     BCF LCD_EN1
+0279   2???           00762     CALL Delay4_1ms
+027A   3020           00763     MOVLW b'00100000'
+027B   0088           00764     MOVWF PORTD
+027C   1608           00765     BSF LCD_EN1
+027D   2???           00766     CALL Delay100us
+027E   1208           00767     BCF LCD_EN1
+027F   2???           00768     CALL Delay4_1ms
+                      00769 
+                      00770     ;ENVÍO DE LA FILA 7 DEL CARACTER 6 (0 0000)
+0280   3020           00771     MOVLW b'00100000'
+0281   0088           00772     MOVWF PORTD
+0282   1608           00773     BSF LCD_EN1
+0283   2???           00774     CALL Delay100us
+0284   1208           00775     BCF LCD_EN1
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0285   2???           00776     CALL Delay4_1ms
+0286   3020           00777     MOVLW b'00100000'
+0287   0088           00778     MOVWF PORTD
+0288   1608           00779     BSF LCD_EN1
+0289   2???           00780     CALL Delay100us
+028A   1208           00781     BCF LCD_EN1
+028B   2???           00782     CALL Delay4_1ms
+                      00783 
+                      00784     ;ENVÍO DE LA FILA 8 DEL CARACTER 6 (0 0000)
+028C   3020           00785     MOVLW b'00100000'
+028D   0088           00786     MOVWF PORTD
+028E   1608           00787     BSF LCD_EN1
+028F   2???           00788     CALL Delay100us
+0290   1208           00789     BCF LCD_EN1
+0291   2???           00790     CALL Delay4_1ms
+0292   3020           00791     MOVLW b'00100000'
+0293   0088           00792     MOVWF PORTD
+0294   1608           00793     BSF LCD_EN1
+0295   2???           00794     CALL Delay100us
+0296   1208           00795     BCF LCD_EN1
+0297   2???           00796     CALL Delay4_1ms
+                      00797     
+                      00798     ;INSTRUCCION CGRAM ADDRESS (7MO CARACTER)
+0298   3007           00799     MOVLW b'00000111' ; Se cargan los bits más significativos al registro de trabajo
+0299   0088           00800     MOVWF PORTD
+029A   1608           00801     BSF LCD_EN1
+029B   2???           00802     CALL Delay100us
+029C   1208           00803     BCF LCD_EN1
+029D   2???           00804     CALL Delay4_1ms
+029E   3000           00805     MOVLW b'00000000' ; Se cargan los bits menos significativos al registro de trabajo
+029F   0088           00806     MOVWF PORTD
+02A0   1608           00807     BSF LCD_EN1
+02A1   2???           00808     CALL Delay100us
+02A2   1208           00809     BCF LCD_EN1
+02A3   2???           00810     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 48
+                      00811 
+                      00812     ;ENVÍO DE LA FILA 1 DEL CARACTER 7 (1 1111)
+02A4   3021           00813     MOVLW b'00100001' ; Al ser datos los que se van a enviar se coloca en alto el bit RS
+02A5   0088           00814     MOVWF PORTD
+02A6   1608           00815     BSF LCD_EN1
+02A7   2???           00816     CALL Delay100us
+02A8   1208           00817     BCF LCD_EN1
+02A9   2???           00818     CALL Delay4_1ms
+02AA   302F           00819     MOVLW b'00101111'
+02AB   0088           00820     MOVWF PORTD
+02AC   1608           00821     BSF LCD_EN1
+02AD   2???           00822     CALL Delay100us
+02AE   1208           00823     BCF LCD_EN1
+02AF   2???           00824     CALL Delay4_1ms
+                      00825 
+                      00826     ;ENVÍO DE LA FILA 2 DEL CARACTER 7 (1 0101)
+02B0   3021           00827     MOVLW b'00100001'
+02B1   0088           00828     MOVWF PORTD
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+02B2   1608           00829     BSF LCD_EN1
+02B3   2???           00830     CALL Delay100us
+02B4   1208           00831     BCF LCD_EN1
+02B5   2???           00832     CALL Delay4_1ms
+02B6   3025           00833     MOVLW b'00100101'
+02B7   0088           00834     MOVWF PORTD
+02B8   1608           00835     BSF LCD_EN1
+02B9   2???           00836     CALL Delay100us
+02BA   1208           00837     BCF LCD_EN1
+02BB   2???           00838     CALL Delay4_1ms
+                      00839 
+                      00840     ;ENVÍO DE LA FILA 3 DEL CARACTER 7(1 1111)
+02BC   3021           00841     MOVLW b'00100001'
+02BD   0088           00842     MOVWF PORTD
+02BE   1608           00843     BSF LCD_EN1
+02BF   2???           00844     CALL Delay100us
+02C0   1208           00845     BCF LCD_EN1
+02C1   2???           00846     CALL Delay4_1ms
+02C2   302F           00847     MOVLW b'00101111'
+02C3   0088           00848     MOVWF PORTD
+02C4   1608           00849     BSF LCD_EN1
+02C5   2???           00850     CALL Delay100us
+02C6   1208           00851     BCF LCD_EN1
+02C7   2???           00852     CALL Delay4_1ms
+                      00853 
+                      00854     ;ENVÍO DE LA FILA 4 DEL CARACTER 7 (1 0101)
+02C8   3021           00855     MOVLW b'00100001'
+02C9   0088           00856     MOVWF PORTD
+02CA   1608           00857     BSF LCD_EN1
+02CB   2???           00858     CALL Delay100us
+02CC   1208           00859     BCF LCD_EN1
+02CD   2???           00860     CALL Delay4_1ms
+02CE   3025           00861     MOVLW b'00100101'
+02CF   0088           00862     MOVWF PORTD
+02D0   1608           00863     BSF LCD_EN1
+02D1   2???           00864     CALL Delay100us
+02D2   1208           00865     BCF LCD_EN1
+02D3   2???           00866     CALL Delay4_1ms
+                      00867 
+                      00868     ;ENVÍO DE LA FILA 5 DEL CARACTER 7 (1 1111)
+02D4   3021           00869     MOVLW b'00100001'
+02D5   0088           00870     MOVWF PORTD
+02D6   1608           00871     BSF LCD_EN1
+02D7   2???           00872     CALL Delay100us
+02D8   1208           00873     BCF LCD_EN1
+02D9   2???           00874     CALL Delay4_1ms
+02DA   302F           00875     MOVLW b'00101111'
+02DB   0088           00876     MOVWF PORTD
+02DC   1608           00877     BSF LCD_EN1
+02DD   2???           00878     CALL Delay100us
+02DE   1208           00879     BCF LCD_EN1
+02DF   2???           00880     CALL Delay4_1ms
+                      00881 
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00882     ;ENVÍO DE LA FILA 6 DEL CARACTER 7 (1 0101)
+02E0   3021           00883     MOVLW b'00100001'
+02E1   0088           00884     MOVWF PORTD
+02E2   1608           00885     BSF LCD_EN1
+02E3   2???           00886     CALL Delay100us
+02E4   1208           00887     BCF LCD_EN1
+02E5   2???           00888     CALL Delay4_1ms
+02E6   3025           00889     MOVLW b'00100101'
+02E7   0088           00890     MOVWF PORTD
+02E8   1608           00891     BSF LCD_EN1
+02E9   2???           00892     CALL Delay100us
+02EA   1208           00893     BCF LCD_EN1
+02EB   2???           00894     CALL Delay4_1ms
+                      00895 
+                      00896     ;ENVÍO DE LA FILA 7 DEL CARACTER 7 (1 1111)
+02EC   3021           00897     MOVLW b'00100001'
+02ED   0088           00898     MOVWF PORTD
+02EE   1608           00899     BSF LCD_EN1
+02EF   2???           00900     CALL Delay100us
+02F0   1208           00901     BCF LCD_EN1
+02F1   2???           00902     CALL Delay4_1ms
+02F2   302F           00903     MOVLW b'00101111'
+02F3   0088           00904     MOVWF PORTD
+02F4   1608           00905     BSF LCD_EN1
+02F5   2???           00906     CALL Delay100us
+02F6   1208           00907     BCF LCD_EN1
+02F7   2???           00908     CALL Delay4_1ms
+                      00909 
+                      00910     ;ENVÍO DE LA FILA 8 DEL CARACTER 7 (1 0101)
+02F8   3021           00911     MOVLW b'00100001'
+02F9   0088           00912     MOVWF PORTD
+02FA   1608           00913     BSF LCD_EN1
+02FB   2???           00914     CALL Delay100us
+02FC   1208           00915     BCF LCD_EN1
+02FD   2???           00916     CALL Delay4_1ms
+02FE   3025           00917     MOVLW b'00100101'
+02FF   0088           00918     MOVWF PORTD
+0300   1608           00919     BSF LCD_EN1
+0301   2???           00920     CALL Delay100us
+0302   1208           00921     BCF LCD_EN1
+0303   2???           00922     CALL Delay4_1ms
+                      00923     
+                      00924     ;INSTRUCCION CGRAM ADDRESS (8VO CARACTER)
+0304   3007           00925     MOVLW b'00000111' ; Se cargan los bits más significativos al registro de trabajo
+0305   0088           00926     MOVWF PORTD
+0306   1608           00927     BSF LCD_EN1
+0307   2???           00928     CALL Delay100us
+0308   1208           00929     BCF LCD_EN1
+0309   2???           00930     CALL Delay4_1ms
+030A   3008           00931     MOVLW b'00001000' ; Se cargan los bits menos significativos al registro de trabajo
+030B   0088           00932     MOVWF PORTD
+030C   1608           00933     BSF LCD_EN1
+030D   2???           00934     CALL Delay100us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+030E   1208           00935     BCF LCD_EN1
+030F   2???           00936     CALL Delay4_1ms ; Se ajustó la dirección de la CGRAM en la posición 56
+                      00937 
+                      00938     ;ENVÍO DE LA FILA 1 DEL CARACTER 8 (1 1111)
+0310   3021           00939     MOVLW b'00100001' ; Al ser datos los que se van a enviar se coloca en alto el bit RS
+0311   0088           00940     MOVWF PORTD
+0312   1608           00941     BSF LCD_EN1
+0313   2???           00942     CALL Delay100us
+0314   1208           00943     BCF LCD_EN1
+0315   2???           00944     CALL Delay4_1ms
+0316   302F           00945     MOVLW b'00101111'
+0317   0088           00946     MOVWF PORTD
+0318   1608           00947     BSF LCD_EN1
+0319   2???           00948     CALL Delay100us
+031A   1208           00949     BCF LCD_EN1
+031B   2???           00950     CALL Delay4_1ms
+                      00951 
+                      00952     ;ENVÍO DE LA FILA 2 DEL CARACTER 8 (1 0101)
+031C   3021           00953     MOVLW b'00100001'
+031D   0088           00954     MOVWF PORTD
+031E   1608           00955     BSF LCD_EN1
+031F   2???           00956     CALL Delay100us
+0320   1208           00957     BCF LCD_EN1
+0321   2???           00958     CALL Delay4_1ms
+0322   3025           00959     MOVLW b'00100101'
+0323   0088           00960     MOVWF PORTD
+0324   1608           00961     BSF LCD_EN1
+0325   2???           00962     CALL Delay100us
+0326   1208           00963     BCF LCD_EN1
+0327   2???           00964     CALL Delay4_1ms
+                      00965 
+                      00966     ;ENVÍO DE LA FILA 3 DEL CARACTER 8 (1 1111)
+0328   3021           00967     MOVLW b'00100001'
+0329   0088           00968     MOVWF PORTD
+032A   1608           00969     BSF LCD_EN1
+032B   2???           00970     CALL Delay100us
+032C   1208           00971     BCF LCD_EN1
+032D   2???           00972     CALL Delay4_1ms
+032E   302F           00973     MOVLW b'00101111'
+032F   0088           00974     MOVWF PORTD
+0330   1608           00975     BSF LCD_EN1
+0331   2???           00976     CALL Delay100us
+0332   1208           00977     BCF LCD_EN1
+0333   2???           00978     CALL Delay4_1ms
+                      00979 
+                      00980     ;ENVÍO DE LA FILA 4 DEL CARACTER 8 (1 0101)
+0334   3021           00981     MOVLW b'00100001'
+0335   0088           00982     MOVWF PORTD
+0336   1608           00983     BSF LCD_EN1
+0337   2???           00984     CALL Delay100us
+0338   1208           00985     BCF LCD_EN1
+0339   2???           00986     CALL Delay4_1ms
+033A   3025           00987     MOVLW b'00100101'
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 20
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+033B   0088           00988     MOVWF PORTD
+033C   1608           00989     BSF LCD_EN1
+033D   2???           00990     CALL Delay100us
+033E   1208           00991     BCF LCD_EN1
+033F   2???           00992     CALL Delay4_1ms
+                      00993 
+                      00994     ;ENVÍO DE LA FILA 5 DEL CARACTER 8 (1 1111)
+0340   3021           00995     MOVLW b'00100001'
+0341   0088           00996     MOVWF PORTD
+0342   1608           00997     BSF LCD_EN1
+0343   2???           00998     CALL Delay100us
+0344   1208           00999     BCF LCD_EN1
+0345   2???           01000     CALL Delay4_1ms
+0346   302F           01001     MOVLW b'00101111'
+0347   0088           01002     MOVWF PORTD
+0348   1608           01003     BSF LCD_EN1
+0349   2???           01004     CALL Delay100us
+034A   1208           01005     BCF LCD_EN1
+034B   2???           01006     CALL Delay4_1ms
+                      01007 
+                      01008     ;ENVÍO DE LA FILA 6 DEL CARACTER 8 (1 1111)
+034C   3021           01009     MOVLW b'00100001'
+034D   0088           01010     MOVWF PORTD
+034E   1608           01011     BSF LCD_EN1
+034F   2???           01012     CALL Delay100us
+0350   1208           01013     BCF LCD_EN1
+0351   2???           01014     CALL Delay4_1ms
+0352   302F           01015     MOVLW b'00101111'
+0353   0088           01016     MOVWF PORTD
+0354   1608           01017     BSF LCD_EN1
+0355   2???           01018     CALL Delay100us
+0356   1208           01019     BCF LCD_EN1
+0357   2???           01020     CALL Delay4_1ms
+                      01021 
+                      01022     ;ENVÍO DE LA FILA 7 DEL CARACTER 8 (1 1011)
+0358   3021           01023     MOVLW b'00100001'
+0359   0088           01024     MOVWF PORTD
+035A   1608           01025     BSF LCD_EN1
+035B   2???           01026     CALL Delay100us
+035C   1208           01027     BCF LCD_EN1
+035D   2???           01028     CALL Delay4_1ms
+035E   302B           01029     MOVLW b'00101011'
+035F   0088           01030     MOVWF PORTD
+0360   1608           01031     BSF LCD_EN1
+0361   2???           01032     CALL Delay100us
+0362   1208           01033     BCF LCD_EN1
+0363   2???           01034     CALL Delay4_1ms
+                      01035 
+                      01036     ;ENVÍO DE LA FILA 8 DEL CARACTER 8 (1 1011)
+0364   3021           01037     MOVLW b'00100001'
+0365   0088           01038     MOVWF PORTD
+0366   1608           01039     BSF LCD_EN1
+0367   2???           01040     CALL Delay100us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 21
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0368   1208           01041     BCF LCD_EN1
+0369   2???           01042     CALL Delay4_1ms
+036A   302B           01043     MOVLW b'00101011'
+036B   0088           01044     MOVWF PORTD
+036C   1608           01045     BSF LCD_EN1
+036D   2???           01046     CALL Delay100us
+036E   1208           01047     BCF LCD_EN1
+036F   2???           01048     CALL Delay4_1ms
+                      01049     
+                      01050     
+0370                  01051 BUCLE:  ; Etiqueta BUCLE
+                      01052     
+                      01053     ;ENVÍO DEL 7MO DATO A IMPRIMIR
+0370   300D           01054     MOVLW 0x000D
+0371   2???           01055     CALL LCD_GoTo
+0372   3006           01056     MOVLW 0x0006
+0373   2???           01057     CALL LCD_Char
+                      01058     
+                      01059     ;ENVÍO DEL 8VO DATO A IMPRIMIR
+0374   304D           01060     MOVLW 0x004D
+0375   2???           01061     CALL LCD_GoTo
+0376   3007           01062     MOVLW 0x0007
+0377   2???           01063     CALL LCD_Char
+                      01064     
+                      01065     ;1ERA APARICIÓN DE DINO
+0378   3000           01066     MOVLW 0x0000
+0379   2???           01067     CALL LCD_GoTo
+                      01068     
+                      01069     ;ENVÍO DE 1ER DATO A IMPRIMIR
+037A   3000           01070     MOVLW 0x0000
+037B   2???           01071     CALL LCD_Char
+                      01072 
+                      01073     ;ENVÍO DE 2DO DATO A IMPRIMIR
+037C   3001           01074     MOVLW 0x0001
+037D   2???           01075     CALL LCD_Char
+                      01076     
+                      01077     ;ENVÍO DE 3ER DATO A IMPRIMIR 
+037E   3002           01078     MOVLW 0x0002
+037F   2???           01079     CALL LCD_Char
+                      01080     
+0380   3040           01081     MOVLW 0x040
+0381   2???           01082     CALL LCD_GoTo
+                      01083     
+                      01084     ;ENVÍO DE 4TO DATO A IMPRIMIR
+0382   3003           01085     MOVLW 0x0003
+0383   2???           01086     CALL LCD_Char
+                      01087 
+                      01088     ;ENVÍO DE 5TO DATO A IMPRIMIR
+0384   3004           01089     MOVLW 0x0004
+0385   2???           01090     CALL LCD_Char
+                      01091     
+                      01092     ;ENVÍO DE 6TO DATO A IMPRIMIR
+0386   3005           01093     MOVLW 0x0005
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 22
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0387   2???           01094     CALL LCD_Char
+                      01095     
+0388   2???           01096     CALL Delay1_25s
+                      01097     
+                      01098     ;BORRAR CASILLAS
+0389   3000           01099     MOVLW 0x0000
+038A   2???           01100     CALL LCD_GoTo
+038B   3020           01101     MOVLW ' '
+038C   2???           01102     CALL LCD_Char
+038D   3020           01103     MOVLW ' '
+038E   2???           01104     CALL LCD_Char
+038F   3040           01105     MOVLW 0x0040
+0390   2???           01106     CALL LCD_GoTo
+0391   3020           01107     MOVLW ' '
+0392   2???           01108     CALL LCD_Char
+0393   3020           01109     MOVLW ' '
+0394   2???           01110     CALL LCD_Char
+                      01111     
+                      01112     ;2DA APARICIÓN
+0395   3002           01113     MOVLW 0x002
+0396   2???           01114     CALL LCD_GoTo
+                      01115     
+                      01116     ;ENVÍO DE 1ER DATO A IMPRIMIR
+0397   3000           01117     MOVLW 0x0000
+0398   2???           01118     CALL LCD_Char
+                      01119     
+                      01120     ;ENVÍO DE 2DO DATO A IMPRIMIR
+0399   3001           01121     MOVLW 0x0001
+039A   2???           01122     CALL LCD_Char
+                      01123     
+                      01124     ;ENVÍO DE 3ER DATO A IMPRIMIR 
+039B   3002           01125     MOVLW 0x0002
+039C   2???           01126     CALL LCD_Char
+                      01127     
+039D   3042           01128     MOVLW 0x042
+039E   2???           01129     CALL LCD_GoTo
+                      01130     
+                      01131     ;ENVÍO DE 4TO DATO A IMPRIMIR
+039F   3003           01132     MOVLW 0x0003
+03A0   2???           01133     CALL LCD_Char
+                      01134     
+                      01135     ;ENVÍO DE 5TO DATO A IMPRIMIR
+03A1   3004           01136     MOVLW 0x0004
+03A2   2???           01137     CALL LCD_Char
+                      01138     
+                      01139     ;ENVÍO DE 6TO DATO A IMPRIMIR
+03A3   3005           01140     MOVLW 0x0005
+03A4   2???           01141     CALL LCD_Char
+                      01142     
+03A5   2???           01143     CALL Delay1_25s
+                      01144     
+                      01145     ;BORRAR CASILLAS
+03A6   3002           01146     MOVLW 0x002
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 23
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+03A7   2???           01147     CALL LCD_GoTo
+03A8   3020           01148     MOVLW ' '
+03A9   2???           01149     CALL LCD_Char
+03AA   3020           01150     MOVLW ' '
+03AB   2???           01151     CALL LCD_Char
+03AC   3020           01152     MOVLW ' '
+03AD   2???           01153     CALL LCD_Char
+03AE   3042           01154     MOVLW 0x0042
+03AF   2???           01155     CALL LCD_GoTo
+03B0   3020           01156     MOVLW ' '
+03B1   2???           01157     CALL LCD_Char
+03B2   3020           01158     MOVLW ' '
+03B3   2???           01159     CALL LCD_Char
+03B4   3020           01160     MOVLW ' '
+03B5   2???           01161     CALL LCD_Char
+                      01162     
+                      01163     ; 3ERA APARICIÓN
+03B6   3005           01164     MOVLW 0x005
+03B7   2???           01165     CALL LCD_GoTo
+                      01166     
+                      01167     ;ENVÍO DE 1ER DATO A IMPRIMIR
+03B8   3000           01168     MOVLW 0x0000
+03B9   2???           01169     CALL LCD_Char
+                      01170     
+                      01171     ;ENVÍO DE 2DO DATO A IMPRIMIR
+03BA   3001           01172     MOVLW 0x0001
+03BB   2???           01173     CALL LCD_Char
+                      01174     
+                      01175     ;ENVÍO DE 3ER DATO A IMPRIMIR 
+03BC   3002           01176     MOVLW 0x0002
+03BD   2???           01177     CALL LCD_Char
+                      01178     
+03BE   3045           01179     MOVLW 0x045
+03BF   2???           01180     CALL LCD_GoTo
+                      01181     
+                      01182     ;ENVÍO DE 4TO DATO A IMPRIMIR
+03C0   3003           01183     MOVLW 0x0003
+03C1   2???           01184     CALL LCD_Char
+                      01185     
+                      01186     ;ENVÍO DE 5TO DATO A IMPRIMIR
+03C2   3004           01187     MOVLW 0x0004
+03C3   2???           01188     CALL LCD_Char
+                      01189     
+                      01190     ;ENVÍO DE 6TO DATO A IMPRIMIR
+03C4   3005           01191     MOVLW 0x0005
+03C5   2???           01192     CALL LCD_Char
+                      01193     
+03C6   3008           01194     MOVLW 0x008
+03C7   2???           01195     CALL LCD_GoTo
+03C8   3052           01196     MOVLW 'R'
+03C9   2???           01197     CALL LCD_Char
+03CA   3041           01198     MOVLW 'A'
+03CB   2???           01199     CALL LCD_Char
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 24
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+03CC   3057           01200     MOVLW 'W'
+03CD   2???           01201     CALL LCD_Char
+03CE   3052           01202     MOVLW 'R'
+03CF   2???           01203     CALL LCD_Char
+03D0   2???           01204     CALL Delay1_25s
+                      01205     
+03D1   3008           01206     MOVLW 0x008
+03D2   2???           01207     CALL LCD_GoTo
+03D3   3020           01208     MOVLW ' '
+03D4   2???           01209     CALL LCD_Char
+03D5   3020           01210     MOVLW ' '
+03D6   2???           01211     CALL LCD_Char
+03D7   3020           01212     MOVLW ' '
+03D8   2???           01213     CALL LCD_Char
+03D9   3020           01214     MOVLW ' '
+03DA   2???           01215     CALL LCD_Char
+03DB   2???           01216     CALL Delay1_25s
+                      01217     
+03DC   3008           01218     MOVLW 0x008
+03DD   2???           01219     CALL LCD_GoTo
+03DE   3052           01220     MOVLW 'R'
+03DF   2???           01221     CALL LCD_Char
+03E0   3041           01222     MOVLW 'A'
+03E1   2???           01223     CALL LCD_Char
+03E2   3057           01224     MOVLW 'W'
+03E3   2???           01225     CALL LCD_Char
+03E4   3052           01226     MOVLW 'R'
+03E5   2???           01227     CALL LCD_Char
+03E6   2???           01228     CALL Delay5s
+                      01229     
+03E7   3008           01230     MOVLW 0x008
+03E8   2???           01231     CALL LCD_GoTo
+03E9   3020           01232     MOVLW ' '
+03EA   2???           01233     CALL LCD_Char
+03EB   3020           01234     MOVLW ' '
+03EC   2???           01235     CALL LCD_Char
+03ED   3020           01236     MOVLW ' '
+03EE   2???           01237     CALL LCD_Char
+03EF   3020           01238     MOVLW ' '
+03F0   2???           01239     CALL LCD_Char
+03F1   2???           01240     CALL Delay1_25s
+                      01241     
+                      01242     ;BORRAR CASILLAS DINO
+03F2   3005           01243     MOVLW 0x005
+03F3   2???           01244     CALL LCD_GoTo
+03F4   3020           01245     MOVLW ' '
+03F5   2???           01246     CALL LCD_Char
+03F6   3020           01247     MOVLW ' '
+03F7   2???           01248     CALL LCD_Char
+03F8   3020           01249     MOVLW ' '
+03F9   2???           01250     CALL LCD_Char
+03FA   3045           01251     MOVLW 0x0045
+03FB   2???           01252     CALL LCD_GoTo
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 25
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+03FC   3020           01253     MOVLW ' '
+03FD   2???           01254     CALL LCD_Char
+03FE   3020           01255     MOVLW ' '
+03FF   2???           01256     CALL LCD_Char
+0400   3020           01257     MOVLW ' '
+0401   2???           01258     CALL LCD_Char
+                      01259     
+0402   2???           01260     GOTO BUCLE ; Regresa a la etiqueta BUCLE
+                      01261 
+                      01262 ; Rutinas de retardos utilizados en el programa
+0403                  01263 Delay250us:
+0403   1283 1303      01264    BANKSEL Count250us
+0405   30FA           01265    MOVLW D'250'
+0406   00A0           01266    MOVWF Count250us
+0407                  01267 D250us:
+Message[305]: Using default destination of 1 (file).
+0407   0BA0           01268    DECFSZ Count250us
+0408   2???           01269    GOTO D250us
+0409   0008           01270    RETURN
+                      01271    
+040A                  01272 Delay25ms:
+040A   1283 1303      01273    BANKSEL Count25ms
+040C   3064           01274    MOVLW D'100'
+040D   00A1           01275    MOVWF Count25ms
+040E                  01276 D25ms:
+040E   2???           01277    CALL Delay250us
+Message[305]: Using default destination of 1 (file).
+040F   0BA1           01278    DECFSZ Count25ms
+0410   2???           01279    GOTO D25ms
+0411   0008           01280    RETURN   
+                      01281    
+0412                  01282 Delay1_25s:
+0412   1283 1303      01283    BANKSEL Count1_25s
+0414   3032           01284    MOVLW D'50'
+0415   00A2           01285    MOVWF Count1_25s
+0416                  01286 D1_25s:
+0416   2???           01287    CALL Delay25ms
+Message[305]: Using default destination of 1 (file).
+0417   0BA2           01288    DECFSZ Count1_25s
+0418   2???           01289    GOTO D1_25s
+0419   0008           01290    RETURN   
+                      01291    
+041A                  01292 Delay5s:
+041A   1283 1303      01293    BANKSEL Count5s
+041C   3004           01294    MOVLW D'4'
+041D   00A3           01295    MOVWF Count5s
+041E                  01296 D5s:
+041E   2???           01297    CALL Delay1_25s
+Message[305]: Using default destination of 1 (file).
+041F   0BA3           01298    DECFSZ Count5s
+0420   2???           01299    GOTO D5s
+0421   0008           01300    RETURN   
+                      01301    
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 26
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[205]: Found directive in column 1. (INCLUDE)
+                      01302 INCLUDE <LCD_lib.inc> ; Se añade la librería de la LCD justo antes del END
+                      00001 ;Ubicación de los pines de EN y RS en Miuva
+                      00002 #define LCD_EN   PORTD,4
+                      00003 #define LCD_RS   PORTD,5
+                      00004 
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00005 CBLOCK  0x020
+  00000020            00006         Count167us
+  00000021            00007         Count15ms
+  00000022            00008         Count1ms
+  00000023            00009         Count100us
+  00000024            00010         Count4_1ms
+  00000025            00011         Count334us
+  00000026            00012         NIBBLE
+  00000027            00013         Ret1  
+  00000028            00014         Ret2
+Warning[205]: Found directive in column 1. (ENDC)
+                      00015 ENDC
+                      00016  
+                      00017     
+                      00018 ;*****************************************************************************;
+                      00019 ;Ejemplo de envío de instrucción                                              ;
+                      00020 ;                                                                             ;
+                      00021 ;   RS      _________________________   1: DATOS | 0: INSTRUCCIONES           ;
+                      00022 ;                                                                             ;   
+                      00023 ;   RW      _________________________   1: LECTURA  |   0: ESCRITURA          ;
+                      00024 ;                 ___      ___                                                ;
+                      00025 ;   EN      _____/   \____/   \______   LEE EN FLANCOS DE BAJADA              ;
+                      00026 ;                                                                             ;
+                      00027 ;           _________________________                                         ;
+                      00028 ;   D7:D4   ___/_4 MSB_\/_4_LSB_\____   PARA ENVIAR LOS 8 BITS DE INSTRUCCION ;
+                      00029 ;                                       PRIMERO SE ENVIAN LOS 4 MÁS           ;
+                      00030 ;                                       SIGNIFICATIVOS Y POSTERIORMENTE LOS   ;
+                      00031 ;                                       4 MENOS SIGNIFICATIVOS                ;
+                      00032 ;                                                                             ;
+                      00033 ;*****************************************************************************;
+                      00034 ;Se carga D7:D4 de la LCD en los bits D3:D0 de Miuva    
+                      00035 
+                      00036 ;*****************************************************************************;
+                      00037 ;                                   LCD_Init                                  ;
+                      00038 ;   Inicializa la LCD, esta función se debe ejecutar antes de cualquier otra  ;
+                      00039 ;   que involucre el uso de la LCD.                                           ;
+                      00040 ;                                                                             ;
+                      00041 ;   Ejemplo de uso:                                                           ;
+                      00042 ;       call    LCD_Init                                                      ;
+                      00043 ;                                                                             ;
+                      00044 ;*****************************************************************************;
+                      00045 
+0422                  00046 LCD_Init    
+0422   1283 1303      00047     BANKSEL PORTD
+0424   1208           00048     BCF     LCD_EN              ;Enable = LOW
+0425   2???           00049     CALL    Delay15ms           
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 27
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0426   1283 1303      00050     BANKSEL PORTD
+0428   1288           00051     BCF     LCD_RS              ;RS = LOW
+                      00052     
+                      00053     ;Inicia secuencia de inicialización
+                      00054     ;Function set
+0429   1283 1303      00055     BANKSEL PORTD
+042B   3003           00056     MOVLW   b'00000011' ;Carga el valor del puerto D
+042C   0088           00057     MOVWF   PORTD       ;Manda el valor al puerto
+042D   1608           00058     BSF     LCD_EN      ;Activa el bit de ENABLE
+042E   2???           00059     CALL    Delay100us
+042F   1208           00060     BCF     LCD_EN
+0430   2???           00061     CALL    Delay4_1ms
+                      00062         
+                      00063     ;Function set
+0431   1283 1303      00064     BANKSEL PORTD
+0433   3003           00065     MOVLW   b'00000011'
+0434   1608           00066     BSF     LCD_EN
+0435   2???           00067     CALL    Delay100us
+0436   1208           00068     BCF     LCD_EN      ;Lee Function set
+0437   2???           00069     CALL    Delay100us
+                      00070         
+                      00071     ;Function set
+0438   1283 1303      00072     BANKSEL PORTD
+043A   3003           00073     MOVLW   b'00000011'
+043B   0088           00074     MOVWF   PORTD
+043C   1608           00075     BSF     LCD_EN
+043D   2???           00076     CALL    Delay100us
+043E   1208           00077     BCF     LCD_EN      ;Lee Function set
+043F   2???           00078     CALL    Delay4_1ms
+                      00079     
+                      00080     ;Function set
+0440   1283 1303      00081     BANKSEL PORTD
+0442   3002           00082     MOVLW   b'00000010'
+0443   0088           00083     MOVWF PORTD
+0444   1608           00084     BSF     LCD_EN
+0445   2???           00085     CALL    Delay100us
+0446   1208           00086     BCF     LCD_EN      ;Lee Function set
+0447   2???           00087     CALL    Delay4_1ms
+                      00088         
+                      00089     ;Function set
+0448   1283 1303      00090     BANKSEL PORTD
+044A   3002           00091     movlw   b'00000010' ;MSB Función set
+044B   0088           00092     movwf   PORTD
+044C   1608           00093     bsf     LCD_EN
+044D   2???           00094     CALL    Delay100us
+044E   1208           00095     bcf     LCD_EN      
+044F   2???           00096     CALL    Delay4_1ms
+0450   300E           00097     movlw   b'00001110' ;LSB Función set
+0451   0088           00098     movwf   PORTD
+0452   1608           00099     bsf     LCD_EN
+0453   2???           00100     CALL    Delay100us
+0454   1208           00101     bcf     LCD_EN      
+0455   2???           00102     CALL    Delay4_1ms
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 28
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00103         
+                      00104     ;Display off
+0456   1283 1303      00105     BANKSEL PORTD
+0458   3000           00106     movlw   b'00000000' ;MSB Funcion display
+0459   0088           00107     movwf   PORTD
+045A   1608           00108     bsf     LCD_EN
+045B   2???           00109     CALL    Delay100us
+045C   1208           00110     bcf     LCD_EN      
+045D   2???           00111     CALL    Delay4_1ms
+045E   3008           00112     movlw   b'00001000' ;LSB Funcion display
+045F   0088           00113     movwf   PORTD
+0460   1608           00114     bsf     LCD_EN
+0461   2???           00115     CALL    Delay100us
+0462   1208           00116     bcf     LCD_EN      
+0463   2???           00117     CALL    Delay4_1ms
+                      00118         
+                      00119     ;Display clear
+0464   1283 1303      00120     BANKSEL PORTD
+0466   3000           00121     movlw   b'00000000' ;MSB Funcion clear
+0467   0088           00122     movwf   PORTD
+0468   1608           00123     bsf     LCD_EN
+0469   2???           00124     CALL    Delay100us
+046A   1208           00125     bcf     LCD_EN      
+046B   2???           00126     call    Delay4_1ms
+046C   3001           00127     movlw   b'00000001' ;LSB Funcion clear
+046D   0088           00128     movwf   PORTD
+046E   1608           00129     bsf     LCD_EN
+046F   2???           00130     CALL    Delay100us
+0470   1208           00131     bcf     LCD_EN      
+0471   2???           00132     call    Delay4_1ms
+                      00133 
+                      00134     ;Entry mode set
+0472   1283 1303      00135     BANKSEL PORTD
+0474   3000           00136     movlw   b'00000000' ;MSB Funcion mode set
+0475   0088           00137     movwf   PORTD
+0476   1608           00138     bsf     LCD_EN
+0477   2???           00139     call    Delay100us
+0478   1208           00140     bcf     LCD_EN      
+0479   2???           00141     call    Delay4_1ms
+047A   3006           00142     movlw   b'00000110' ;LSB Funcion mode set
+047B   0088           00143     movwf   PORTD
+047C   1608           00144     bsf     LCD_EN
+047D   2???           00145     call    Delay100us
+047E   1208           00146     bcf     LCD_EN      
+047F   2???           00147     call    Delay4_1ms
+                      00148         
+                      00149     ;DDRAM ACCES
+0480   1283 1303      00150     BANKSEL PORTD
+0482   3008           00151     movlw   b'00001000' ;MSB DDRAM Access
+0483   0088           00152     movwf   PORTD
+0484   1608           00153     bsf     LCD_EN
+0485   2???           00154     call    Delay100us
+0486   1208           00155     bcf     LCD_EN      
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 29
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0487   2???           00156     call    Delay4_1ms
+0488   3000           00157     movlw   b'00000000' ;LSB DDRAM Access
+0489   0088           00158     movwf   PORTD
+048A   1608           00159     bsf     LCD_EN
+048B   2???           00160     call    Delay100us
+048C   1208           00161     bcf     LCD_EN      
+048D   2???           00162     call    Delay4_1ms
+                      00163         
+                      00164     ;Display on
+048E   1283 1303      00165     BANKSEL PORTD
+0490   3000           00166     movlw   b'00000000' ;MSB Display ON
+0491   0088           00167     movwf   PORTD
+0492   1608           00168     bsf     LCD_EN
+0493   2???           00169     call    Delay100us
+0494   1208           00170     bcf     LCD_EN      
+0495   2???           00171     call    Delay4_1ms
+0496   300C           00172     movlw   b'00001100' ;LSB Display ON
+0497   0088           00173     movwf   PORTD
+0498   1608           00174     bsf     LCD_EN
+0499   2???           00175     call    Delay100us
+049A   1208           00176     bcf     LCD_EN      
+049B   2???           00177     call    Delay4_1ms
+                      00178         
+049C   0008           00179     return
+                      00180     
+                      00181 ;*****************************************************************************;
+                      00182 ;   Ejemplo de envío del caracter H
+                      00183 ;   Ubicación del caracter H: 0100 1000
+                      00184 ;   Se tiene que enviar primero 0100 y posteriormente 1000
+                      00185 ;   1. NIBBLE almacena el valor 0100 1000
+                      00186 ;   2. Intercambia los nibbles y los almacena en W -> W = 0100 
+                      00187 ;   3. Realiza una AND con 0x0F para tener solamente 4 bits
+                      00188 ;       W = 0000 0100
+                      00189 ;   4. Le suma 00100000 para habilitar RS como datos -> W = 0010 0100
+                      00190 ;   5. Se envía a la LCD (PUERTO D)
+                      00191 ;   6. Mueve al registro de trabajo la variable NIBBLE -> W = 0100 1000
+                      00192 ;   7. Realiza una AND con 0x0F para tener solamente 4 bits
+                      00193 ;       W = 0000 1000
+                      00194 ;   8. Le suma 00100000 para habilitar RS como datos -> W = 0010 1000
+                      00195 ;   9. Se envía a la LCD (PUERTO D)
+                      00196 ;******************************************************************************;
+                      00197     
+                      00198 ;*****************************************************************************;
+                      00199 ;                                   LCD_Char                                  ;
+                      00200 ;   Imprime cualquier caracter en la posición actual de la LCD.               ;
+                      00201 ;                                                                             ;
+                      00202 ;   Ejemplo de uso:                                                           ;
+                      00203 ;       movlw   'H'             ;Caracter a escribir                          ;
+                      00204 ;       call    LCD_Char                                                      ;
+                      00205 ;                                                                             ;
+                      00206 ;*****************************************************************************;
+049D                  00207 LCD_Char
+049D   1283 1303      00208     BANKSEL PORTD
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 30
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+049F   1688           00209     bsf     LCD_RS      ;Se enviará un dato
+04A0   00A6           00210     movwf   NIBBLE      ;Almacenamos el valor en la variable NIBBLE
+04A1   0E26           00211     swapf   NIBBLE,w    ;Intercambia los NIBBLE
+04A2   390F           00212     andlw   0x0F        ;AND con 0x0F
+04A3   3E20           00213     addlw   b'00100000' ;Suma 00100000
+04A4   0088           00214     movwf   PORTD       ;Se envía al puerto D
+04A5   1608           00215     bsf     LCD_EN      ;ENABLE = HIGH
+04A6   2???           00216     call    Delay100us
+04A7   1208           00217     bcf     LCD_EN      ;ENABLE = LOW
+04A8   2???           00218     call    Delay4_1ms
+04A9   0826           00219     movf    NIBBLE,w    ;Mueve la variable NIBBLE a W
+04AA   390F           00220     andlw   0x0F        ;AND con 0x0F
+04AB   3E20           00221     addlw   b'00100000' ;Suma 00100000
+04AC   0088           00222     movwf   PORTD       ;Se envía al puerto D
+04AD   1608           00223     bsf     LCD_EN      ;ENABLE = HIGH
+04AE   2???           00224     call    Delay100us
+04AF   1208           00225     bcf     LCD_EN      ;ENABLE = LOW
+04B0   2???           00226     call    Delay4_1ms
+04B1   0008           00227     return      
+                      00228     
+                      00229 ;*****************************************************************************;
+                      00230 ;                                   LCD_Clear                                 ;
+                      00231 ;   Limpia todo lo que está escrito en la LCD y posteriormente regresa el     ;
+                      00232 ;   cursor a Home.
+                      00233 ;                                                                             ;
+                      00234 ;   Ejemplo de uso:                                                           ;
+                      00235 ;       call    LCD_Clear                                                     ;
+                      00236 ;                                                                             ;
+                      00237 ;*****************************************************************************;
+04B2                  00238 LCD_Clear
+04B2   1283 1303      00239     BANKSEL PORTD
+04B4   1288           00240     bcf     LCD_RS
+04B5   3000           00241     movlw       b'00000000'
+04B6   0088           00242     movwf       PORTD
+04B7   1608           00243     bsf LCD_EN
+04B8   2???           00244     call        Delay100us
+04B9   1208           00245     bcf LCD_EN  
+04BA   2???           00246     call        Delay4_1ms
+04BB   3001           00247     movlw       b'00000001'
+04BC   0088           00248     movwf       PORTD
+04BD   1608           00249     bsf LCD_EN
+04BE   2???           00250     call        Delay100us
+04BF   1208           00251     bcf LCD_EN  
+04C0   2???           00252     call        Delay4_1ms
+04C1   0008           00253     return
+                      00254     
+                      00255 ;*****************************************************************************;
+                      00256 ;                                   LCD_Home                                  ;
+                      00257 ;   Envia el cursor a la posición inicial de la LCD                           ;
+                      00258 ;                                                                             ;
+                      00259 ;   Ejemplo de uso:                                                           ;
+                      00260 ;       call    LCD_Home                                                      ;
+                      00261 ;                                                                             ;
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 31
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00262 ;*****************************************************************************;
+04C2                  00263 LCD_Home
+04C2   1283 1303      00264     BANKSEL PORTD
+04C4   1288           00265     bcf     LCD_RS
+04C5   3000           00266     movlw       b'00000000'
+04C6   0088           00267     movwf       PORTD
+04C7   1608           00268     bsf LCD_EN
+04C8   2???           00269     call        Delay100us
+04C9   1208           00270     bcf LCD_EN  ;Lee Function set
+04CA   2???           00271     call        Delay4_1ms
+04CB   3002           00272     movlw       b'00000010'
+04CC   0088           00273     movwf       PORTD
+04CD   1608           00274     bsf LCD_EN
+04CE   2???           00275     call        Delay100us
+04CF   1208           00276     bcf LCD_EN  ;Lee Function set
+04D0   2???           00277     call        Delay4_1ms
+04D1   0008           00278     return
+                      00279    
+                      00280 ;*****************************************************************************;
+                      00281 ;                                   LCD_GoTo                                  ;
+                      00282 ;   Inicializa la LCD, esta función se debe ejecutar antes de cualquier otra  ;
+                      00283 ;   que involucre el uso de la LCD.                                           ;
+                      00284 ;                                                                             ;
+                      00285 ;   Ejemplo de uso:                                                           ;
+                      00286 ;       movlw   0x03        ;Posición de la LCD                               ;
+                      00287 ;       call    LCD_GoTo                                                      ;
+                      00288 ;                                                                             ;
+                      00289 ;*****************************************************************************;
+                      00290 ;                       POSICIONES DE LA LCD 2X16                             ;
+                      00291 ;                                                                             ;
+                      00292 ;          00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F                    ;
+                      00293 ;          40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F                    ;
+                      00294 ;                                                                             ;
+                      00295 ;*****************************************************************************;
+04D2                  00296 LCD_GoTo
+04D2   1283 1303      00297     BANKSEL PORTD
+04D4   1288           00298     bcf     LCD_RS
+04D5   00A6           00299     movwf   NIBBLE
+04D6   0E26           00300     swapf   NIBBLE,w
+04D7   390F           00301     andlw   0x0F
+04D8   3E08           00302     addlw   b'0001000'
+04D9   0088           00303     movwf   PORTD
+04DA   1608           00304     bsf     LCD_EN
+04DB   2???           00305     call    Delay100us
+04DC   1208           00306     bcf     LCD_EN      ;Lee Function set
+04DD   2???           00307     call    Delay4_1ms
+04DE   0826           00308     movf    NIBBLE,w
+04DF   390F           00309     andlw   0x0F
+04E0   0088           00310     movwf   PORTD
+04E1   1608           00311     bsf     LCD_EN
+04E2   2???           00312     call    Delay100us
+04E3   1208           00313     bcf     LCD_EN      ;Lee Function set
+04E4   2???           00314     call    Delay4_1ms
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 32
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+04E5   0008           00315     return
+                      00316 
+                      00317 ;*****************************************************************************;
+                      00318 ;                       Funciones de retardos                                 ;
+                      00319 ;*****************************************************************************;
+04E6                  00320 Delay167us:
+04E6   1283 1303      00321         banksel Count167us
+04E8   30A7           00322         movlw   D'167'
+04E9   00A0           00323         movwf   Count167us
+04EA                  00324 D167us:
+Message[305]: Using default destination of 1 (file).
+04EA   0BA0           00325         decfsz  Count167us
+04EB   2???           00326         goto    D167us
+04EC   0008           00327         return
+                      00328         
+04ED                  00329 Delay334us:
+04ED   1283 1303      00330         banksel Count334us
+04EF   3002           00331         movlw   D'2'
+04F0   00A5           00332         movwf   Count334us
+04F1                  00333 D334us:
+04F1   2???           00334         call    Delay167us
+Message[305]: Using default destination of 1 (file).
+04F2   0BA5           00335         decfsz  Count334us
+04F3   2???           00336         goto    D334us
+04F4   0008           00337         return
+                      00338 
+04F5                  00339 Delay4_1ms:
+04F5   1283 1303      00340         banksel Count4_1ms
+04F7   300D           00341         movlw   D'13'
+04F8   00A4           00342         movwf   Count4_1ms
+04F9                  00343 D4_1ms:
+04F9   2???           00344         call    Delay334us
+Message[305]: Using default destination of 1 (file).
+04FA   0BA4           00345         decfsz  Count4_1ms
+04FB   2???           00346         goto    D4_1ms
+04FC   0008           00347         return
+                      00348 
+04FD                  00349 Delay100us:
+04FD   1283 1303      00350         banksel Count100us
+04FF   3064           00351         movlw   D'100'
+0500   00A3           00352         movwf   Count100us
+0501                  00353 D100us:
+Message[305]: Using default destination of 1 (file).
+0501   0BA3           00354         decfsz  Count100us
+0502   2???           00355         goto    D100us
+0503   0008           00356         return
+                      00357 
+0504                  00358 Delay1ms:
+0504   1283 1303      00359         banksel Count1ms
+0506   3003           00360         movlw   D'3'
+0507   00A2           00361         movwf   Count1ms
+0508                  00362 D1ms:
+0508   2???           00363         call    Delay334us
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 33
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[305]: Using default destination of 1 (file).
+0509   0BA2           00364         decfsz  Count1ms
+050A   2???           00365         goto    D1ms
+050B   0008           00366         return
+                      00367 
+050C                  00368 Delay15ms:
+050C   1283 1303      00369         banksel Count15ms
+050E   300F           00370         movlw   D'15'
+050F   00A1           00371         movwf   Count15ms
+0510                  00372 D15ms:
+0510   2???           00373         call    Delay1ms
+Message[305]: Using default destination of 1 (file).
+0511   0BA1           00374         decfsz  Count15ms
+0512   2???           00375         goto    D15ms
+0513   0008           00376         return
+                      00377         
+                      00378     
+20F2 3EFF             00379     END
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 34
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+BRG9                              00000001
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 35
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRGH                              00000002
+BUCLE                             00000370
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 36
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CHS3                              00000005
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+CREN                              00000004
+CSRC                              00000007
+Count100us                        00000023
+Count15ms                         00000021
+Count167us                        00000020
+Count1_25s                        00000022
+Count1ms                          00000022
+Count250us                        00000020
+Count25ms                         00000021
+Count334us                        00000025
+Count4_1ms                        00000024
+Count5s                           00000023
+D                                 00000005
+D100us                            00000501
+D15ms                             00000510
+D167us                            000004EA
+D1_25s                            00000416
+D1ms                              00000508
+D250us                            00000407
+D25ms                             0000040E
+D334us                            000004F1
+D4_1ms                            000004F9
+D5s                               0000041E
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+D_A                               00000005
+D_NOT_A                           00000005
+Delay100us                        000004FD
+Delay15ms                         0000050C
+Delay167us                        000004E6
+Delay1_25s                        00000412
+Delay1ms                          00000504
+Delay250us                        00000403
+Delay25ms                         0000040A
+Delay334us                        000004ED
+Delay4_1ms                        000004F5
+Delay5s                           0000041A
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 37
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INICIO                            00000005
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LCD_Char                          0000049D
+LCD_Clear                         000004B2
+LCD_EN                            PORTD,4
+LCD_EN1                           PORTD,4
+LCD_GoTo                          000004D2
+LCD_Home                          000004C2
+LCD_Init                          00000422
+LCD_RS                            PORTD,5
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 38
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NIBBLE                            00000026
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 39
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 40
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+Ret1                              00000027
+Ret2                              00000028
+S                                 00000003
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 41
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 42
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+VCFG0                             00000004
+VCFG1                             00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 43
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+MPASM 5.86                          MAIN.ASM   7-3-2020  15:07:00         PAGE 44
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+
+Errors   :     0
+Warnings :     9 reported,     0 suppressed
+Messages :    13 reported,     0 suppressed
+
+
